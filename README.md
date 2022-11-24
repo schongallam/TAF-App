@@ -66,7 +66,11 @@ KDEN 232353Z 36011KT 10SM FEW090 BKN140 BKN200 05/M08 A2995 RMK AO2 SLP137 T0050
 
 ## releases
 
-Initial release
+1.0 Initial release
+
+1.0.1 minor fixes
+-1kb buffer limit per TAF or METAR
+-passed argv[0] to main() as compact representation
 
 ## dependencies
 sys

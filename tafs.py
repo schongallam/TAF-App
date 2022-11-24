@@ -2,18 +2,24 @@
 #
 # Obtains TAFs (+/- METARs) from aviationweather.gov
 # (C) 2022 Malcolm Schongalla
-# Publicly released under the CARGO CULT SOFTWARE LICENSE VERSION 1.0, MAY 2022.
+# Publicly released under the CARGO CULT SOFTWARE LICENSE VERSION 1.0.1, MAY 2022.
 
 # Retrieves the desired data from aviationweather.gov and organizes it into a conventional presentation.
 # Priority was given to minimizing HTTPS requests.  But this gives you a chunk of METARs and a chunk
 # of TAFs and they are not spaced, organized, or CRLF'd appropriately for a standard pilot format.
 # So a lot of the below code exists just to rectify that.
 
+# Technical note: There is no published limit to the total number of characters in a TAF or METAR, in
+# NWSI 10-813.  Individual TAF lines are limited to 69 characters, but there is no explicit limit to the
+# number of lines.  Also, various worldwide TAF producers may or may not always adhere to this limit or
+# other ICAO standards.  To limit the risk of buffer overflows, a limit of 1kb per station entry (TAF or
+# METAR) is enfored in get_raw_text().  That function does not discriminate between TAF or METAR.
+
 import sys, argparse, string
 import urllib.request
 from urllib.error import URLError, HTTPError
 
-version = "1.0"
+version = "1.0.1"
 
 def is_valid_station(station):
     # Rules: 4 characters long; alphanumeric characters only; must start with a letter
@@ -42,6 +48,7 @@ def get_raw_text(xml, pretty=True, strict=False):
             assert end >= start+10, "Malformed XML element <raw_text>"
         elif end < start+10:
             return TAF_list
+        if end-start > 1024: end = start+1024 # see technical note above
         TAF_list.append(xml[start:end])
         xml = xml[end+11:]
     if pretty:
@@ -225,4 +232,4 @@ def main(selfname, argv):
 #  Make the http request error catching more robust
 
 if __name__ == "__main__":
-    main(sys.argv[0], sys.argv[1:])
+    main(sys.argv[0][sys.argv[0].rfind('/')+1:], sys.argv[1:])
