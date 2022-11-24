@@ -27,7 +27,8 @@ The number of METARs per station is set arbitrarily to 24, commensurate with ant
 
 ## examples
 
-```$ ./tafs.py KBOS KJFK  # Get the most recent TAFs each from Boston and JFK
+```
+$ ./tafs.py KBOS KJFK  # Get the most recent TAFs each from Boston and JFK
 KBOS 232105Z 2321/2424 33008KT P6SM FEW050
   FM240600 35005KT P6SM SKC
   FM241200 34005KT P6SM BKN035
